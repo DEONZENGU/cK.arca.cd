@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>contrôle de signature numérique ck.arca.cd</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: #f5f6f8;
+            color: #333;
+        }
+
+        /* ===== HEADER ===== */
+        header {
+            background: #ffffff;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        }
+
+        header .logo img {
+            height: 40px; /* Ajustez la hauteur selon votre image */
+            width: auto;
+        }
+
+        header nav a {
+            text-decoration: none;
+            margin-left: 20px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        header nav a.active {
+            background: #1f9cf0;
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 4px;
+        }
+
+        /* ===== MAIN ===== */
+        .container {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 30px;
+            display: flex;
+            gap: 50px;
+            align-items: flex-start;
+        }
+
+        .left {
+            flex: 1;
+        }
+
+        .left h1 {
+            font-size: 38px;
+            margin-bottom: 20px;
+        }
+
+        .left p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        /* ===== CARD VERIFICATION ===== */
+        .card {
+            width: 420px;
+            background: #fff;
+            padding: 30px;
+            border-radius: 6px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+
+        .file-input {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .file-input input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-right: none;
+            border-radius: 4px 0 0 4px;
+            background: #f9f9f9;
+        }
+
+        .file-input button {
+            padding: 10px 18px;
+            border: none;
+            background: #1f9cf0;
+            color: #fff;
+            cursor: pointer;
+            border-radius: 0 4px 4px 0;
+            font-weight: 600;
+        }
+
+        .captcha {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+
+        .captcha-box {
+            padding: 8px 12px;
+            background: #eee;
+            border-radius: 4px;
+            font-weight: bold;
+            letter-spacing: 3px;
+        }
+
+        .captcha input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .btn-verify {
+            width: 100%;
+            padding: 12px;
+            background: #1f9cf0;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .btn-verify:hover {
+            background: #1689d8;
+        }
+
+        /* ===== RESULTAT VERIFICATION ===== */
+        .result-box {
+            max-width: 900px;
+            margin: 60px auto;
+            background: #f2fbf3;
+            border: 2px solid #2db84d;
+            border-radius: 10px;
+            padding: 30px 40px;
+        }
+
+        .result-title {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            color: #2db84d;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-top: 1px solid #d8ecd9;
+            font-size: 16px;
+        }
+
+        .result-row:first-of-type {
+            border-top: none;
+        }
+
+        .result-label {
+            font-weight: 600;
+            color: #1b7f36;
+        }
+
+        .result-value {
+            color: #1b7f36;
+        }
+
+        .btn-new-check {
+            display: block;
+            margin: 40px auto 0;
+            background: #2db84d;
+            color: #fff;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-new-check:hover {
+            background: #24963e;
+        }
+
+        /* ===== SECTION CONTACT ===== */
+        .contact-section {
+            max-width: 800px;
+            margin: 80px auto 40px;
+            padding: 0 30px;
+        }
+
+        .contact-container {
+            background: #fff;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .contact-title {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+        }
+
+        .form-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            width: 100%;
+        }
+
+        .form-input {
+            padding: 14px 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            width: 100%;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #1f9cf0;
+        }
+
+        .form-input.textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-submit {
+            background: #1f9cf0;
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .form-submit:hover {
+            background: #1689d8;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            text-align: center;
+            padding: 30px;
+            margin-top: 60px;
+            background: #000000;
+            color: #ffffff;
+            font-size: 14px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .card {
+                width: 100%;
+            }
+
+            .result-box {
+                margin: 40px 20px;
+                padding: 20px;
+            }
+
+            .contact-section {
+                margin: 40px 20px;
+                padding: 0;
+            }
+
+            .contact-container {
+                padding: 25px;
+            }
+
+            .contact-title {
+                font-size: 24px;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            header nav {
+                display: flex;
+                gap: 10px;
+            }
+
+            header nav a {
+                margin-left: 0;
+            }
+
+            .left h1 {
+                font-size: 28px;
+            }
+
+            .result-row {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            footer {
+                padding: 20px;
+                margin-top: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">
+        <!-- Image dans le même dossier que le fichier HTML -->
+        <img src="entete.jpg" alt="En-tête du site">
+    </div>
+    <nav>
+        <a href="#" class="active">ACCUEIL</a>
+        <a href="#contact">CONTACT</a>
+    </nav>
+</header>
+
+<main class="container">
+    <div class="left">
+        <h1>Vérification signature numérique</h1>
+        <p>
+            Bienvenue sur le site web de vérification de la signature du document numérique PDF.
+            Vous pouvez effectuer la vérification de signature numérique par un lecteur PDF
+            générique, sur notre site web ou par une application mobile.
+        </p>
+    </div>
+
+    <div class="card">
+        <h2>Vérification signature numérique</h2>
+
+        <div class="file-input">
+            <input type="text" placeholder="Choisir le fichier" disabled>
+            <button>Choisir</button>
+        </div>
+
+        <div class="captcha">
+            <div class="captcha-box">qsyjie</div>
+            <input type="text" placeholder="Tapez ces caractères">
+        </div>
+
+        <button class="btn-verify">✔ Vérifier</button>
+    </div>
+</main>
+
+<!-- ===== SUITE DE LA PAGE : RESULTAT ===== -->
+<section class="result-box">
+    <div class="result-title">✔ Le document est authentique</div>
+
+    <div class="result-row">
+        <div class="result-label">Autorité</div>
+        <div class="result-value">Certificat de responsabilité civile automobile</div>
+    </div>
+
+    <div class="result-row">
+        <div class="result-label">Numéro d'immatriculation</div>
+        <div class="result-value">.4559AK10</div>
+    </div>
+
+    <div class="result-row">
+        <div class="result-label">Numéro de châssis</div>
+        <div class="result-value">000709</div>
+    </div>
+
+    <div class="result-row">
+        <div class="result-label">Véhicule avec remorque</div>
+        <div class="result-value">Non</div>
+    </div>
+
+    <div class="result-row">
+        <div class="result-label">Nombre de places</div>
+        <div class="result-value">4</div>
+    </div>
+
+    <div class="result-row">
+        <div class="result-label">Date effet</div>
+        <div class="result-value">29/10/2025</div>
+    </div>
+
+    <div class="result-row">
+        <div class="result-label">Date échéance</div>
+        <div class="result-value">26/04/2026</div>
+    </div>
+
+    <button class="btn-new-check">✔ Nouvelle vérification</button>
+</section>
+
+<!-- ===== SECTION CONTACT ===== -->
+<section class="contact-section" id="contact">
+    <div class="contact-container">
+        <h2 class="contact-title">Envoie-nous un message !</h2>
+        
+        <form class="contact-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <input type="email" class="form-input" placeholder="Votre adresse e-mail*" required>
+                </div>
+                
+                <div class="form-group">
+                    <input type="text" class="form-input" placeholder="Votre sujet...">
+                </div>
+            </div>
+            
+            <div class="form-group full-width">
+                <textarea class="form-input textarea" placeholder="Votre message*..." rows="5" required></textarea>
+            </div>
+            
+            <button type="submit" class="form-submit">Envoyer le message</button>
+        </form>
+    </div>
+</section>
+
+<footer>
+    2020 - 2026 © Contrôle signature.
+</footer>
+
+</body>
+</html>
